@@ -20,17 +20,16 @@ struct ContentView: View {
                 .font(.largeTitle)
                 .padding(.top, 100)
             Spacer()
-            ButtonView(color: .red, action: timer.startTimer, title: timer.buttonTitle)
+            ButtonView(color: .red, title: timer.buttonTitle, action: timer.startTimer)
             Spacer()
-            ButtonView(color: .blue, action: logOut, title: "Log Out")
+            ButtonView(color: .blue,
+                       title: "Log Out") {
+                DataManager.shared.deleteUser(userManager: userManager)
+            }
         }
     }
-    
-    private func logOut() {
-        userManager.user.isRegister.toggle()
-        userManager.user.name = ""
-    }
 }
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
