@@ -10,22 +10,25 @@ import SwiftUI
 class DataManager {
     static let shared = DataManager()
     
-    @AppStorage("user") private var userData: Data?
+    private let userDefaults = UserDefaults.standard
+    private let key = "userManager"
     
     private init() {}
     
     func saveUser(user: User) {
-        userData = try? JSONEncoder().encode(user)
+        guard let userData = try? JSONEncoder().encode(user) else { return }
+        userDefaults.set(userData, forKey: key)
     }
     
     func decodeUser() -> User {
-        guard let user = try? JSONDecoder().decode(User.self, from: userData ?? Data()) else { return User() }
+        guard let userData = userDefaults.object(forKey: key) as? Data else { return User() }
+        guard let user = try? JSONDecoder().decode(User.self, from: userData) else { return User() }
         return user
     }
     
     func deleteUser(userManager: UserManager) {
         userManager.user.isRegister.toggle()
         userManager.user.name = ""
-        userData = nil
+        userDefaults.removeObject(forKey: key)
     }
 }
